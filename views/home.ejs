@@ -1,0 +1,8 @@
+<h1>This is the homepage!</h1>
+<% if(isauth) { %>
+<h2>Hi <%= user.username %></h2>
+<%}else{%>
+<li><a href="/register">register!</a></li>
+<li><a href="/login">login!</a></li>
+<li><a href="/logout">logout!</a></li>
+<% } %>
