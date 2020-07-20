@@ -1,26 +1,34 @@
-var express = require("express"),
+const express = require("express"),
     mongoose = require("mongoose"),
-    bodyParser = require("body-parser"),
-    User = require("./user"),
+    User = require("./models/user"),
     passport = require("passport"),
     LocalStrategy = require("passport-local"),
-    passportLocalMongoose = require("passport-local-mongoose");
-    mongoose.connect("Add your connection string", { useNewUrlParser: true,useUnifiedTopology: true });  
+    passportLocalMongoose = require("passport-local-mongoose"),
+    cookieParser = require('cookie-parser'),
+    connectFlash = require('connect-flash');
+    mongoose.connect("mongodb+srv://user:RnAUoPJKuL2lvdzu@cluster0.hpxkr.mongodb.net/<dbname>?retryWrites=true&w=majority", { useNewUrlParser: true,useUnifiedTopology: true })
+        .then(() =>  console.log('connection succesful'))
+        .catch((err) => console.error(err)); 
+    mongoose.set('useCreateIndex', true);
 
-    var app = express();
+    const app = express();
     app.set("view engine","ejs");
     app.use(express.urlencoded({ extended: true }));
+    app.use(cookieParser('moonji'));
     app.use(require("express-session")({
-        secret:"moonji",
+        secret:'moonji',
         resave: false,
-        saveUninitialized: false
+        saveUninitialized: false,
+        cookie: { maxAge : 4000000 }
     }));
-
-passport.use(new LocalStrategy(User.authenticate()));
+    
+passport.use(User.createStrategy());
 app.use(passport.initialize());
 app.use(passport.session());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+
+app.use(connectFlash());
 
 app.use(function (req, res, next) {
     res.locals.user = req.user;
@@ -28,50 +36,22 @@ app.use(function (req, res, next) {
     next();
 });
 
- app.get("/",function(req, res){
-    res.render("home"); 
- });
+// app.use(function(req, res, next) {
+//     res.locals.success_msg = req.flash('success_msg');
+//     res.locals.error_msg = req.flash('error_msg');
+//     res.locals.error = req.flash('error');
+//     next();
+//   });
+
+function isLoggedIn(req, res, next){
+    if(req.isAuthenticated()){
+        return next();
+    }
+    res.redirect("/login");
+}
+
+app.use('/',require('./routes/auth'))
  
- app.get("/register", function(req, res){
-     res.render("register");
- });
- 
- app.post("/register", function(req, res){
-     User.register(new User({username: req.body.username}), req.body.password, function(err, user){
-         if(err){
-             console.log(err);
-             return res.render("register");
-         }
-         passport.authenticate("local")(req, res, function(){
-             res.redirect("/login");
-         });
-     });
- });
- 
- app.get("/login", function(req, res){
-     res.render("login");
- });
- 
- 
- app.post("/login", passport.authenticate("local",{
-     successRedirect: "/",
-     failureRedirect: "/login",
- }), function(req, res){
-    
- });
- 
- app.get("/logout", function(req, res){
-     req.logout();
-     res.redirect("/");
- });
- 
- function isLoggedIn(req, res, next){
-     if(req.isAuthenticated()){
-         return next();
-     }
-     res.redirect("/login");
- }
- 
- app.listen(process.env.PORT || 3000, function(){
+app.listen(process.env.PORT || 3000, function(){
      console.log("listening to port")
  });
