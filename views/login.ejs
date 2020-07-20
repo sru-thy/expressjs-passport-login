@@ -1,0 +1,12 @@
+<h1>Login Page</h1>
+<form action="/login" method="POST">
+    <% if (message) { %>
+        <h2> <%= message %> </h2>
+       <% } %>
+    <input type="email" name="email" placeholder="email">
+    <input type="password" name="password" placeholder="password">
+    <button>Submit</button>
+</form>
+<li><a href="/register">register!</a></li>
+<li><a href="/login">login!</a></li>
+<li><a href="/logout">logout!</a></li>

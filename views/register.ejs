@@ -1,0 +1,13 @@
+<h1>Sign Up Form</h1>
+<form action="/register" method="POST">
+    <% if (message != undefined) { %>
+         <h2> <%= message %> </h2>
+        <% } %>
+    <input type="email" name="email" placeholder="email">
+    <input type="text" name="username" placeholder="username">
+    <input type="password" name="password" placeholder="password">
+    <button>Submit</button>
+</form>
+<li><a href="/register">register!</a></li>
+<li><a href="/login">login!</a></li>
+<li><a href="/logout">logout!</a></li>
