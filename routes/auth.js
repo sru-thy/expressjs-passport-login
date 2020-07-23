@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const passport = require("passport")
 const User = require('../models/user'); 
+const { check, validationResult } = require('express-validator')
 
 router.get("/",function(req, res){
     res.render("home"); 
@@ -13,12 +14,22 @@ router.get("/register", notloggedin, function(req, res){
       });
  });
  
-router.post("/register", notloggedin, function(req, res){
+router.post("/register", notloggedin,[
+  check('username').not().isEmpty().isLength({ max: 7 }),
+] ,
+function(req, res){
+  const errors = validationResult(req)
+  if (!errors.isEmpty()) {
+    return res.render("register",{message: 'username must be less than 7 characters' });
+  }
     user = new User({username: req.body.username, email:req.body.email})
      User.register(user, req.body.password, function(err, user){
          if(err){
-               req.flash("error", err.message);
-               return res.render("register",{
+              if (err.name === 'MongoError' && err.code === 11000) {
+                return res.render("register",{message: 'A user with the given email/username is already registered ' });
+                }
+                 req.flash("error", err.message);
+                return res.render("register",{
                 message: req.flash('error')
               });
          }
