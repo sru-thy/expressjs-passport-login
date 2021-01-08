@@ -6,7 +6,7 @@ const express = require("express"),
     passportLocalMongoose = require("passport-local-mongoose"),
     cookieParser = require('cookie-parser'),
     connectFlash = require('connect-flash');
-    mongoose.connect("add your connection string", { useNewUrlParser: true,useUnifiedTopology: true })
+    mongoose.connect("", { useNewUrlParser: true,useUnifiedTopology: true })
         .then(() =>  console.log('connection succesful'))
         .catch((err) => console.error(err)); 
     mongoose.set('useCreateIndex', true);
@@ -35,20 +35,6 @@ app.use(function (req, res, next) {
     res.locals.isauth = req.isAuthenticated();
     next();
 });
-
-// app.use(function(req, res, next) {
-//     res.locals.success_msg = req.flash('success_msg');
-//     res.locals.error_msg = req.flash('error_msg');
-//     res.locals.error = req.flash('error');
-//     next();
-//   });
-
-function isLoggedIn(req, res, next){
-    if(req.isAuthenticated()){
-        return next();
-    }
-    res.redirect("/login");
-}
 
 app.use('/',require('./routes/auth'))
  
