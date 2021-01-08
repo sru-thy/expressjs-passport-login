@@ -6,17 +6,16 @@ const express = require("express"),
     passportLocalMongoose = require("passport-local-mongoose"),
     cookieParser = require('cookie-parser'),
     connectFlash = require('connect-flash');
-    mongoose.connect("Add your connection string", { useNewUrlParser: true,useUnifiedTopology: true })
+    mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true,useUnifiedTopology: true,useCreateIndex :true})
         .then(() =>  console.log('connection succesful'))
         .catch((err) => console.error(err)); 
-    mongoose.set('useCreateIndex', true);
 
-    const app = express();
+const app = express();
     app.set("view engine","ejs");
     app.use(express.urlencoded({ extended: true }));
-    app.use(cookieParser('moonji'));
+    app.use(cookieParser(process.env.SESSION_SECRET));
     app.use(require("express-session")({
-        secret:'moonji',
+        secret: process.env.SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
         cookie: { maxAge : 4000000 }
