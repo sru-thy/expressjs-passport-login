@@ -1,7 +1,7 @@
 {
-  "name": "login",
+  "name": "Authentication system for Node.js Apps",
   "version": "1.0.0",
-  "description": "",
+  "description": "Simplified passport local auth using passport local mongoose",
   "main": "app.js",
   "scripts": {
     "start": "node app.js"
