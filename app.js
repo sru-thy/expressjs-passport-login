@@ -6,7 +6,7 @@ const express = require("express"),
     passportLocalMongoose = require("passport-local-mongoose"),
     cookieParser = require('cookie-parser'),
     connectFlash = require('connect-flash');
-    mongoose.connect("", { useNewUrlParser: true,useUnifiedTopology: true })
+    mongoose.connect("Add your connection string", { useNewUrlParser: true,useUnifiedTopology: true })
         .then(() =>  console.log('connection succesful'))
         .catch((err) => console.error(err)); 
     mongoose.set('useCreateIndex', true);
